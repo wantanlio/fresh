@@ -1,9 +1,14 @@
 #!/usr/bin/bash
 set -e
 function sethostname() {
-        local GetEC2InstanceID=`curl http://169.254.169.254/latest/meta-data/instance-id`
-        local GetEC2InstanceTag=`aws ec2 describe-tags --region ap-southeast-1 --filters "Name=resource-id,Values=$GetEC2InstanceID" --query "Tags[?Key=='Name']" | grep Value | tr -d ' ' | cut -f2 -d: | tr -d '"' | tail -1 `
-        sudo /usr/bin/hostnamectl set-hostname $GetEC2InstanceTag
+        local getEC2instanceid=`curl -s http://169.254.169.254/latest/meta-data/instance-id`
+        local getEC2instancetag=`/usr/bin/aws ec2 describe-tags --region ap-southeast-1 --filters "Name=resource-id,Values=$getEC2instanceid" --query "Tags[?Key=='Name']" | grep Value | tr -d ' ' | cut -f2 -d: | tr -d '"' | tail -1 `
+        local getLocalhost=`hostname`
+        if [ "$getLocalhost" == "$getEC2instancetag" ]; then
+                echo  -e "\033[32;33mHostname updated, Ignore !!!\033[0m"
+        else
+                sudo /usr/bin/hostnamectl set-hostname $getEC2instancetag
+        fi
 }
 
 function aptupdate() {
@@ -19,51 +24,54 @@ function settimezone() {
 }
 
 function updateprofile() {
-        local paths="~/.bashrc"
-        local checkPS=`grep PS1 $paths | grep -v '#'`
-        local checkLS=`grep "alias ls=" $paths | grep -v '#'`
-        local checkLL=`grep "alias ll=" $paths | grep -v '#'`
-        local checkL=`grep "alias l=" $paths | grep -v '#'`
-        local checkRM=`grep "alias rm=" $paths | grep -v '#'`
-        local checkCP=`grep "alias cp=" $paths | grep -v '#'`
-        local checkMV=`grep "alias mv=" $paths | grep -v '#'`
+        local paths="/root/.bashrc"
+        local checkPS=`grep -r PS1 $paths | grep -v '#'`
+        local checkLS=`grep -r "alias ls=" $paths | grep -v '#'`
+        local checkLL=`grep -r "alias ll=" $paths | grep -v '#'`
+        local checkL=`grep -r "alias l=" $paths | grep -v '#'`
+        local checkRM=`grep -r "alias rm=" $paths | grep -v '#'`
+        local checkCP=`grep -r "alias cp=" $paths | grep -v '#'`
+        local checkMV=`grep -r "alias mv=" $paths | grep -v '#'`
         local checkGREP=`grep "alias grep=" $paths | grep -v '#'`
-        if [ ! -z "$checkPS" ]; then
-            echo "Insert PS1"
-            echo "PS1='${debian_chroot:+($debian_chroot)}\u@\[\e[1;32m\]\h\[\e[m\]:\w\$ '" | tee -a ~/.bashrc
+        if [ -z "$checkPS" ]; then
+                echo  -e "\033[32;33mInsert PS1\033[0m"
+                echo "PS1='${debian_chroot:+($debian_chroot)}\u@\[\e[1;32m\]\h\[\e[m\]:\w\$ '" | tee -a $paths
         fi
-        if [ ! -z "$checkLS" ]; then
-            echo "Insert LS"
-            echo "alias ls='ls --color=always --group-directories-first'" | tee -a ~/.bashrc
+        if [ -z "$checkLS" ]; then
+                echo  -e "\033[32;33mInsert LS\033[0m"
+                echo "alias ls='ls --color=always --group-directories-first'" | tee -a $paths
         fi
-        if [ ! -z "$checkLL" ]; then
-            echo "Insert LL"
-            echo "alias ll='ls -lah --color=always --group-directories-first'" | tee -a ~/.bashrc
+        if [ -z "$checkLL" ]; then
+                echo  -e "\033[32;33mInsert LL\033[0m"
+                echo "alias ll='ls -lah --color=always --group-directories-first'" | tee -a $paths
         fi
-        if [ ! -z "$checkL" ]; then
-            echo "Insert L"
-            echo "alias l='ls -lA --color=always --group-directories-first'" | tee -a ~/.bashrc
+        if [ -z "$checkL" ]; then
+                echo  -e "\033[32;33mInsert L\033[0m"
+                echo "alias l='ls -lA --color=always --group-directories-first'" | tee -a $paths
         fi
-        if [ ! -z "$checkRM" ]; then
-            echo "Insert RM"
-            echo "alias rm='rm -i" | tee -a ~/.bashrc
+        if [ -z "$checkRM" ]; then
+                echo  -e "\033[32;33mInsert RM\033[0m"
+                echo "alias rm='rm -i" | tee -a $paths
         fi
-        if [ ! -z "$checkCP" ]; then
-            echo "Insert CP"
-            echo "alias cp='cp -i" | tee -a ~/.bashrc
+        if [ -z "$checkCP" ]; then
+                echo  -e "\033[32;33mInsert CP\033[0m"
+                echo "alias cp='cp -i" | tee -a $paths
         fi
-        if [ ! -z "$checkMV" ]; then
-            echo "Insert MV"
-            echo "alias mv='mv -i" | tee -a ~/.bashrc
+        if [ -z "$checkMV" ]; then
+                echo  -e "\033[32;33mInsert MV\033[0m"
+                echo "alias mv='mv -i" | tee -a $paths
         fi
-        if [ ! -z "$checkGREP" ]; then
-            echo "Insert GREP"
-            echo "alias grep='grep --color=auto" | tee -a ~/.bashrc
-        fi        
+        if [ -z "$checkGREP" ]; then
+                echo  -e "\033[32;33mInsert GREP\033[0m"
+                echo "alias grep='grep --color=auto" | tee -a $paths
+        fi
 }
-echo "Setup Hostname"
-sethostname
-echo "Setup Timezone"
+
+echo  -e "\033[32;33mSetup Timezone\033[0m"
 settimezone
-echo "APT update"
+echo  -e "\033[32;33mAPT update\033[0m"
 aptupdate
+echo  -e "\033[32;33mSetup Hostname\033[0m"
+sethostname
+echo  -e "\033[32;33mUpdate bashrc\033[0m"
+updateprofile
