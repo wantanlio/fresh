@@ -28,35 +28,35 @@ function updateprofile() {
         local checkCP=`grep "alias cp=" $paths | grep -v '#'`
         local checkMV=`grep "alias mv=" $paths | grep -v '#'`
         local checkGREP=`grep "alias grep=" $paths | grep -v '#'`
-        if [ ! -z $checkPS ]; then
+        if [ ! -z "$checkPS" ]; then
             echo "Insert PS1"
             echo "PS1='${debian_chroot:+($debian_chroot)}\u@\[\e[1;32m\]\h\[\e[m\]:\w\$ '" | tee -a ~/.bashrc
         fi
-        if [ ! -z $checkLS ]; then
+        if [ ! -z "$checkLS" ]; then
             echo "Insert LS"
             echo "alias ls='ls --color=always --group-directories-first'" | tee -a ~/.bashrc
         fi
-        if [ ! -z $checkLL ]; then
+        if [ ! -z "$checkLL" ]; then
             echo "Insert LL"
             echo "alias ll='ls -lah --color=always --group-directories-first'" | tee -a ~/.bashrc
         fi
-        if [ ! -z $checkL ]; then
+        if [ ! -z "$checkL" ]; then
             echo "Insert L"
             echo "alias l='ls -lA --color=always --group-directories-first'" | tee -a ~/.bashrc
         fi
-        if [ ! -z $checkRM ]; then
+        if [ ! -z "$checkRM" ]; then
             echo "Insert RM"
             echo "alias rm='rm -i" | tee -a ~/.bashrc
         fi
-        if [ ! -z $checkCP ]; then
+        if [ ! -z "$checkCP" ]; then
             echo "Insert CP"
             echo "alias cp='cp -i" | tee -a ~/.bashrc
         fi
-        if [ ! -z $checkMV ]; then
+        if [ ! -z "$checkMV" ]; then
             echo "Insert MV"
             echo "alias mv='mv -i" | tee -a ~/.bashrc
         fi
-        if [ ! -z $checkGREP ]; then
+        if [ ! -z "$checkGREP" ]; then
             echo "Insert GREP"
             echo "alias grep='grep --color=auto" | tee -a ~/.bashrc
         fi        
