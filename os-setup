@@ -11,6 +11,18 @@ function sethostname() {
         fi
 }
 
+function sethostnamev2() {
+        local getToken=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+        local getEC2instanceid=`curl -H "X-aws-ec2-metadata-token: $getToken" -v http://169.254.169.254/latest/meta-data/instance-id`
+        local getEC2instancetag=`/usr/bin/aws ec2 describe-tags --region ap-southeast-1 --filters "Name=resource-id,Values=$getEC2instanceid" --query "Tags[?Key=='Name']" | grep Value | tr -d ' ' | cut -f2 -d: | tr -d '"' | tail -1 `
+        local getLocalhost=`hostname`
+        if [ "$getLocalhost" == "$getEC2instancetag" ]; then
+                echo  -e "\033[32;33mHostname updated, Ignore !!!\033[0m"
+        else
+                sudo /usr/bin/hostnamectl set-hostname $getEC2instancetag
+        fi
+}
+
 function aptupdate() {
         sudo apt update
         sudo apt remove vim -y
@@ -67,11 +79,15 @@ function updateprofile() {
         fi
 }
 
+echo  -e "\033[32;33mSetup Hostname\033[0m"
+if [ -z "`curl -s http://169.254.169.254/latest/meta-data/instance-id`" ]; then
+        sethostnamev2
+else
+        sethostname
+fi
 echo  -e "\033[32;33mSetup Timezone\033[0m"
 settimezone
 echo  -e "\033[32;33mAPT update\033[0m"
 aptupdate
-echo  -e "\033[32;33mSetup Hostname\033[0m"
-sethostname
 echo  -e "\033[32;33mUpdate bashrc\033[0m"
 updateprofile
