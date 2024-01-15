@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 set -e
 function sethostname() {
         local GetEC2InstanceID=`curl http://169.254.169.254/latest/meta-data/instance-id`
