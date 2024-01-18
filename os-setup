@@ -37,7 +37,7 @@ function settimezone() {
 
 function updateprofile() {
         local paths="/root/.bashrc"
-        local checkPS=`grep -r PS1 $paths | grep -v '#'`
+        local checkPS=`grep -r "PS1" $paths | grep -v '#'`
         local checkLS=`grep -r "alias ls=" $paths | grep -v '#'`
         local checkLL=`grep -r "alias ll=" $paths | grep -v '#'`
         local checkL=`grep -r "alias l=" $paths | grep -v '#'`
@@ -45,6 +45,7 @@ function updateprofile() {
         local checkCP=`grep -r "alias cp=" $paths | grep -v '#'`
         local checkMV=`grep -r "alias mv=" $paths | grep -v '#'`
         local checkGREP=`grep "alias grep=" $paths | grep -v '#'`
+        local checkSHOPT=`grep "shopt " $paths | grep -v '#'`
         if [ -z "$checkPS" ]; then
                 echo  -e "\033[32;33mInsert PS1\033[0m"
                 echo "PS1='${debian_chroot:+($debian_chroot)}\u@\[\e[1;32m\]\h\[\e[m\]:\w\$ '" | tee -a $paths
@@ -76,6 +77,10 @@ function updateprofile() {
         if [ -z "$checkGREP" ]; then
                 echo  -e "\033[32;33mInsert GREP\033[0m"
                 echo "alias grep='grep --color=auto" | tee -a $paths
+        fi
+        if [ -z "$checkSHOPT" ]; then
+                echo  -e "\033[32;33mInsert SHOPT\033[0m"
+                echo "shopt -s histappend" | tee -a $paths
         fi
 }
 
