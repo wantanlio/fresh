@@ -64,19 +64,19 @@ function updateprofile() {
         fi
         if [ -z "$checkRM" ]; then
                 echo  -e "\033[32;33mInsert RM\033[0m"
-                echo "alias rm='rm -i" | tee -a $paths
+                echo "alias rm='rm -i'" | tee -a $paths
         fi
         if [ -z "$checkCP" ]; then
                 echo  -e "\033[32;33mInsert CP\033[0m"
-                echo "alias cp='cp -i" | tee -a $paths
+                echo "alias cp='cp -i'" | tee -a $paths
         fi
         if [ -z "$checkMV" ]; then
                 echo  -e "\033[32;33mInsert MV\033[0m"
-                echo "alias mv='mv -i" | tee -a $paths
+                echo "alias mv='mv -i'" | tee -a $paths
         fi
         if [ -z "$checkGREP" ]; then
                 echo  -e "\033[32;33mInsert GREP\033[0m"
-                echo "alias grep='grep --color=auto" | tee -a $paths
+                echo "alias grep='grep --color=auto'" | tee -a $paths
         fi
         if [ -z "$checkSHOPT" ]; then
                 echo  -e "\033[32;33mInsert SHOPT\033[0m"
