@@ -86,7 +86,7 @@ function updateprofile() {
 
 function disableipv6() {
         local paths="/etc/default/grub"
-        local checkG=`grep -r "GRUB_CMDLINE_LINUX" $paths | grep -v '#'`
+        local checkG=`grep -r "ipv6.disable" $paths | grep -v '#'`
         if [ -z "$checkG" ]; then
                 echo  -e "\033[32;33mInsert GRUB\033[0m"
                 echo 'GRUB_CMDLINE_LINUX="ipv6.disable=1"' | tee -a /etc/default/grub
