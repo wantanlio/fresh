@@ -84,6 +84,16 @@ function updateprofile() {
         fi
 }
 
+function disableipv6() {
+        local paths="/etc/default/grub"
+        local checkG=`grep -r "GRUB_CMDLINE_LINUX" $paths | grep -v '#'`
+        if [ -z "$checkG" ]; then
+                echo  -e "\033[32;33mInsert GRUB\033[0m"
+                echo 'GRUB_CMDLINE_LINUX="ipv6.disable=1"' | tee -a /etc/default/grub
+                grub-mkconfig -o /boot/grub/grub.cfg
+        fi
+}
+
 echo  -e "\033[32;33mSetup Hostname\033[0m"
 if [ -z "`curl -s http://169.254.169.254/latest/meta-data/instance-id`" ]; then
         sethostnamev2
@@ -96,3 +106,5 @@ echo  -e "\033[32;33mAPT update\033[0m"
 aptupdate
 echo  -e "\033[32;33mUpdate bashrc\033[0m"
 updateprofile
+echo  -e "\033[32;33mDisable IPv6\033[0m"
+disableipv6
