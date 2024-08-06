@@ -27,7 +27,7 @@ function aptupdate() {
         sudo apt update
         sudo apt remove vim -y
         sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
-        sudo DEBIAN_FRONTEND=noninteractive apt install gpg unzip net-tools chrony htop neovim apt-transport-https -y
+        sudo DEBIAN_FRONTEND=noninteractive apt install gpg unzip net-tools chrony htop neovim apt-transport-https git curl -y
         sudo apt autoremove -y
 }
 
