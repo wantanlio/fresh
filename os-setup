@@ -81,7 +81,12 @@ function updateprofile() {
         if [ -z "$checkSHOPT" ]; then
                 echo  -e "\033[32;33mInsert SHOPT\033[0m"
                 echo "shopt -s histappend" | tee -a $paths
-        fi
+        fi        
+}
+
+function updateeditor() {
+        sudo update-alternatives --set editor /usr/bin/nvim
+        sudo update-alternatives --set vi /usr/bin/nvim
 }
 
 function disableipv6() {
@@ -106,5 +111,7 @@ echo  -e "\033[32;33mAPT update\033[0m"
 aptupdate
 echo  -e "\033[32;33mUpdate bashrc\033[0m"
 updateprofile
+echo  -e "\033[32;33mUpdate Editor\033[0m"
+updateeditor
 echo  -e "\033[32;33mDisable IPv6\033[0m"
 disableipv6
